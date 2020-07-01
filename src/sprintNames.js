@@ -3,7 +3,7 @@ const request = require('request-promise');
 const args = process.argv.slice(2);
 
 const wikiUrls = require("./urls.js");
-const domains = wikiUrls.map(x => x["name"])
+const domains = wikiUrls.map(x => x["domain"])
 const domain = args[0]
 
 function usage(exit_code = 0) {
@@ -32,7 +32,9 @@ if (!domains.includes(domain)) {
     usage(1);
 }
 
-var inputUrl = wikiUrls.filter(x => x["name"] == domain)[0]["url"]
+var inputUrl = wikiUrls.filter(x => x["domain"] == domain)[0]["url"]
+var columnIndex = wikiUrls.filter(x => x["domain"] == domain)[0]["nameColumn"]
+
 var searchLetter = args[1][0];
 
 var options = {
@@ -47,7 +49,7 @@ var options = {
 request(options)
     .then(function ($) {
         //console.log($)
-        console.log(getNameByLetter($, searchLetter, 2))
+        console.log(getNameByLetter($, searchLetter, columnIndex))
     })
     .catch(function (err) {
         console.log("Crawling failed or Cheerio choked... " + err)
